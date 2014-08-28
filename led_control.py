@@ -6,8 +6,11 @@
 import Adafruit_BBIO.PWM as PWM
 import argparse
 import atexit
+import csv
 import logging
+import os
 import random
+import sys
 import time
 
 class LedArray:
@@ -89,6 +92,28 @@ class LedArray:
                   self.green_val, self.blue_val)
     PWM.set_duty_cycle(pin, value)
 
+  def process_file(self, filename):
+    if not os.path.exists(filename):
+      logging.warning('File not found')
+    else:
+      with open(filename, 'rb') as f:
+        sequence = csv.reader(f)
+        for command in sequence:
+          if command[0] == 'f':
+            self.fade(int(command[1]), int(command[2]), int(command[3]),
+                      float(command[4]))
+          elif command[0] == 'i':
+            self.led_state(self.red_pin, int(command[1]))
+            self.led_state(self.green_pin, int(command[2]))
+            self.led_state(self.blue_pin, int(command[3]))
+            time.sleep(float(command[4]))
+          elif command[0] == 'w':
+            time.sleep(float(command[1]))
+          elif command[0] == 'r':
+            self.random_color()
+          else:
+            logging.warning('invalid command in file')
+
   def random_color(self, rate = 0, fade = False):
     """Set the LEDs to a random color, smoothly if fade is set."""
     if fade:
@@ -152,6 +177,8 @@ def main():
                       help='Run a basic test sequence.')
   parser.add_argument('-r', '--rate', default=1.0, type=float,
                       help='Approximate rate in seconds for transitions.')
+  parser.add_argument('-f', '--filename', default=None, type=str,
+                      help='File containing a LED sequence.')
   parser.add_argument('--random', action='store_true',
                       help='Change the LED colors randomly')
   parser.add_argument('--red_pin_name', default="P8_13", type=str,
@@ -170,13 +197,18 @@ def main():
                        args.blue_pin_name, args.pwm_max_value)
   atexit.register(led_array.__exit__)
 
+
+
   if args.test:
     led_array.test_colors(args.rate)
+    sys.exit()
+  elif args.filename is not None:
+    while(1):
+      led_array.process_file(args.filename)
   elif args.random:
     while(1):
       led_array.random_color(args.rate, True)
-  else:
-    while(1):
-      led_array.color_cycle(args.rate)
-     
+  while(1):
+    led_array.color_cycle(args.rate)
+   
 main()
