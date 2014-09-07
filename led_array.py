@@ -123,6 +123,12 @@ class LedArray:
       self.led_state(self.blue_pin, random.randrange(self.pwm_max + 1))
       time.sleep(rate)
 
+  def set_rgb(self, r, g, b):
+    """Set the LED array to a color."""
+    self.led_state(self.red_pin, r)
+    self.led_state(self.green_pin, g)
+    self.led_state(self.blue_pin, b)
+
   def test_colors(self, delay = 1):
     """Test the color channels and PWM capability."""
     logging.info('red full for %f s, half for %f s' % (delay, delay))
