@@ -25,30 +25,18 @@ class ColorClock:
 
   def select_rgb(self, tm_val):
     assert 0 <= tm_val <= 59, 'not a minute or second value'
-    if tm_val <= 10:
+    if tm_val <= 20:
       self.r = 100 - tm_val * 5
       self.g = tm_val * 5
       self.b = 0
-    elif tm_val <= 20:
-      self.r = 50 - ((tm_val - 10) * 5)
-      self.g = 50 + ((tm_val - 10) * 5)
-      self.b = 0
-    elif tm_val <= 30:
+    elif tm_val <= 40:
       self.r = 0
       self.g = 100 - ((tm_val - 20) * 5)
       self.b = (tm_val - 20) * 5
-    elif tm_val <= 40:
-      self.r = 0
-      self.g = 50 - ((tm_val - 30) * 5)
-      self.b = 50 + ((tm_val - 30) * 5)
-    elif tm_val <= 50:
+    else:
       self.r = (tm_val - 40) * 5
       self.g = 0
       self.b = 100 - ((tm_val - 40) * 5)
-    else:
-      self.r = 50 + (tm_val - 50) * 5
-      self.g = 0
-      self.b = 50 - (tm_val - 50)
 
 def main():
   parser = argparse.ArgumentParser(description='LED control script',
