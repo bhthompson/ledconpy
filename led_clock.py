@@ -44,6 +44,8 @@ def main():
   parser.add_argument('-v', '--verbose', action='count')
   parser.add_argument('-t', '--test', action='store_true',
                       help='Run a basic test sequence.')
+  parser.add_argument('--warningpulse', action='store_true',
+                      help='Pulse on 30 minute boundaries.')
   parser.add_argument('--red_pin_name', default="P8_13", type=str,
                       help='Name of the red PWM pin.')
   parser.add_argument('--green_pin_name', default="P8_19", type=str,
@@ -65,7 +67,11 @@ def main():
     array.test_colors(args.rate)
     sys.exit()
   while(1):
-    color_clock.current_color()
-    array.fade(color_clock.r, color_clock.g, color_clock.b, 30.0)
+    if args.warningpulse and time.localtime().tm_min in [29, 59]:
+        array.fade(0, 0, 0, 3.0)
+        array.fade(100, 0, 0, 3.0)
+    else:
+      color_clock.current_color()
+      array.fade(color_clock.r, color_clock.g, color_clock.b, 30.0)
    
 main()
