@@ -111,6 +111,12 @@ class LedArray:
           else:
             logging.warning('invalid command in file')
 
+  def pulse(self, r, g, b, rate, cycles):
+    """Pulse the LEDs from off to a provided RGB value."""
+    for x in range(cycles):
+      self.fade(0, 0, 0, rate)
+      self.fade(r, g, b, rate)
+
   def random_color(self, rate = 0, fade = False):
     """Set the LEDs to a random color, smoothly if fade is set."""
     if fade:

@@ -68,8 +68,7 @@ def main():
     sys.exit()
   while(1):
     if args.warningpulse and time.localtime().tm_min in [29, 59]:
-        array.fade(0, 0, 0, 3.0)
-        array.fade(100, 0, 0, 3.0)
+        array.pulse(100, 0, 0, 3.0, 10)
     else:
       color_clock.current_color()
       array.fade(color_clock.r, color_clock.g, color_clock.b, 30.0)
