@@ -67,8 +67,14 @@ def main():
     array.test_colors(args.rate)
     sys.exit()
   while(1):
-    if args.warningpulse and time.localtime().tm_min in [29, 59]:
-        array.pulse(100, 0, 0, 3.0, 10)
+    minute = time.localtime().tm_min
+    hour = time.localtime().tm_hour
+    if args.warningpulse and minute in [29, 59]:
+      # Pulse red 10 times on 30 minute boundaries.
+      array.pulse(100, 0, 0, 3.0, 10)
+      # Pulse blue the hour on the hour.
+      if minute == 59:
+        array.pulse(0, 0, 100, 3.0, hour + 1)
     else:
       color_clock.current_color()
       array.fade(color_clock.r, color_clock.g, color_clock.b, 30.0)
